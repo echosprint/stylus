@@ -51,8 +51,8 @@ def create_cap():
     inner.apply_translation([0, 0, -0.25])
 
     # torus at the bottom of inner annulus to thicken the end
-    inner_mid_r = (0.7 + TIP_ID / 2.0) / 2.0+0.3
-    tube_r = (TIP_ID / 2.0 - 0.7) / 2.0
+    inner_mid_r = (0.7 + TIP_ID / 2.0) / 2.0
+    tube_r = (TIP_ID / 2.0 - 0.5) / 2.0
     torus = trimesh.creation.torus(
         major_radius=inner_mid_r, minor_radius=tube_r
     )
