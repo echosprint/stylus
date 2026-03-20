@@ -33,7 +33,7 @@ L_TUBE_R_MIN = 3.5  # vertical tube inner radius (mm)
 L_TUBE_R_MAX = 4.5  # vertical tube outer radius (mm)
 L_TUBE_H = 100  # vertical tube height (mm)
 
-CLAMP_W = 1  # clamp tab width (mm)
+CLAMP_W = 2  # clamp tab width (mm)
 CLAMP_T = 4  # clamp tab thickness (mm)
 CLAMP_H = 80  # clamp tab height (mm)
 
