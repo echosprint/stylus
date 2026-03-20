@@ -1,5 +1,12 @@
-# Generate a 3D-printable stylus holder with cap, handle, cone, and clamp.
-# Dependencies: trimesh, manifold3d (boolean engine for trimesh)
+"""Generate a 3D-printable stylus holder with cap, handle, cone, and clamp.
+
+Dependencies: trimesh, manifold3d (boolean engine for trimesh)
+
+To fit a different stylus tip, change TIP_OD, TIP_ID, and TIP_H below:
+  TIP_OD — outer diameter of the stylus tip (the cap grips around this)
+  TIP_ID — inner diameter of the stylus tip (the inner annulus fits inside this)
+  TIP_H  — tip height (for reference)
+"""
 import math
 import os
 from functools import reduce
