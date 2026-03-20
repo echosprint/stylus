@@ -110,8 +110,9 @@ def create_cone():
     )
 
     # cut below z = -1
-    cut_box = trimesh.creation.box(extents=[200, 200, 200])
-    cut_box.apply_translation([0, 0, -1 - 100])
+    cone_center_x = handle_end_x - cone_overlap + cone_full_h / 2 + 20
+    cut_box = trimesh.creation.box(extents=[cone_full_h + 2, CONE_R * 2 + 2, CONE_R * 2 + 2])
+    cut_box.apply_translation([cone_center_x, 0, -1 - (CONE_R + 1)])
     cone = cone.difference(cut_box)
 
     return [cone]
