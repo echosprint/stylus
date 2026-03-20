@@ -7,6 +7,7 @@ To fit a different stylus tip, change TIP_OD, TIP_ID, and TIP_H below:
   TIP_ID — inner diameter of the stylus tip (the inner annulus fits inside this)
   TIP_H  — tip height (for reference)
 """
+
 import math
 import os
 from functools import reduce
@@ -53,9 +54,7 @@ def create_cap():
     # torus at the bottom of inner annulus to thicken the end
     inner_mid_r = (0.7 + TIP_ID / 2.0) / 2.0
     tube_r = (TIP_ID / 2.0 - 0.5) / 2.0
-    torus = trimesh.creation.torus(
-        major_radius=inner_mid_r, minor_radius=tube_r
-    )
+    torus = trimesh.creation.torus(major_radius=inner_mid_r, minor_radius=tube_r)
     inner_bottom_z = -0.05 - (CAP_H + 0.5) / 2.0
     torus.apply_translation([0, 0, inner_bottom_z])
 
@@ -121,7 +120,9 @@ def create_cone():
 
     # cut below z = -1
     cone_center_x = handle_end_x - cone_overlap + cone_full_h / 2 + 20
-    cut_box = trimesh.creation.box(extents=[cone_full_h + 2, CONE_R * 2 + 2, CONE_R * 2 + 2])
+    cut_box = trimesh.creation.box(
+        extents=[cone_full_h + 2, CONE_R * 2 + 2, CONE_R * 2 + 2]
+    )
     cut_box.apply_translation([cone_center_x, 0, -1 - (CONE_R + 1)])
     cone = cone.difference(cut_box)
 
@@ -151,7 +152,6 @@ def create_clamp():
     return [l_tube, clamp_pos, clamp_neg]
 
 
-
 def main():
     cap = create_cap()
     handle = create_handle()
@@ -159,6 +159,25 @@ def main():
     clamp = create_clamp()
 
     all_parts = cap + handle + cone + clamp
+    names = [
+        "cap_outer",
+        "cap_inner",
+        "cap_torus",
+        "cap_top",
+        "handle",
+        "support_handle",
+        "support",
+        "cone",
+        "clamp_tube",
+        "clamp_pos",
+        "clamp_neg",
+    ]
+    for name, mesh in zip(names, all_parts):
+        b = mesh.bounds
+        e = mesh.extents
+        print(
+            f"  {name:16s}  {e[0]:5.1f} x {e[1]:5.1f} x {e[2]:5.1f}  bbox x[{b[0][0]:7.2f},{b[1][0]:7.2f}] y[{b[0][1]:7.2f},{b[1][1]:7.2f}] z[{b[0][2]:7.2f},{b[1][2]:7.2f}]"
+        )
 
     result = reduce(lambda a, b: a.union(b), all_parts)
 
