@@ -1,4 +1,5 @@
 import math
+import os
 from functools import reduce
 
 import trimesh
@@ -140,8 +141,12 @@ def main():
     print_bounds(parts)
 
     result = reduce(lambda a, b: a.union(b), all_parts)
-    result.export("stylus.stl")
-    print("done:", len(result.faces), "faces")
+
+    out_dir = os.path.join(os.path.dirname(__file__), "..", "data", "stylus")
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, "stylus.stl")
+    result.export(out_path)
+    print("done:", len(result.faces), "faces →", out_path)
 
 
 if __name__ == "__main__":
