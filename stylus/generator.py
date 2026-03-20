@@ -142,11 +142,37 @@ def main():
 
     result = reduce(lambda a, b: a.union(b), all_parts)
 
-    out_dir = os.path.join(os.path.dirname(__file__), "..", "data", "stylus")
+    project_root = os.path.dirname(os.path.dirname(__file__))
+    out_dir = os.path.join(project_root, "data", "stylus")
     os.makedirs(out_dir, exist_ok=True)
+
     out_path = os.path.join(out_dir, "stylus.stl")
     result.export(out_path)
     print("done:", len(result.faces), "faces →", out_path)
+    print("watertight:", result.is_watertight)
+
+    # Export colored GLB for visual inspection
+    colors = [
+        [230, 80, 80, 255],    # cap - red
+        [230, 80, 80, 255],
+        [230, 80, 80, 255],
+        [80, 180, 80, 255],    # handle - green
+        [80, 180, 80, 255],
+        [80, 130, 230, 255],   # cone - blue
+        [230, 180, 50, 255],   # clamp - yellow
+        [230, 180, 50, 255],
+        [230, 180, 50, 255],
+    ]
+    for mesh, color in zip(all_parts, colors):
+        mesh.visual.face_colors = color
+
+    scene = trimesh.Scene()
+    for name, mesh in parts.items():
+        scene.add_geometry(mesh, node_name=name)
+
+    glb_path = os.path.join(out_dir, "stylus.glb")
+    scene.export(glb_path)
+    print("done:", glb_path)
 
 
 if __name__ == "__main__":
