@@ -1,3 +1,5 @@
+# Generate a 3D-printable stylus holder with cap, handle, cone, and clamp.
+# Dependencies: trimesh, manifold3d (boolean engine for trimesh)
 import math
 import os
 from functools import reduce
@@ -58,6 +60,7 @@ def create_cap():
     )
     top.apply_translation([0, 0, CAP_H / 2 + 0.25 - EPS])
 
+    print(f"cap fit: inner_d={TIP_ID:.1f} outer_d={TIP_OD:.1f} cap_h={CAP_H:.1f}mm")
     return [outer, inner, torus, top]
 
 
@@ -160,6 +163,8 @@ def main():
     result.export(out_path)
     print("done:", len(result.faces), "faces →", out_path)
     print("watertight:", result.is_watertight)
+    e = result.extents
+    print(f"size: {e[0]:.1f} x {e[1]:.1f} x {e[2]:.1f} mm")
 
 
 if __name__ == "__main__":
