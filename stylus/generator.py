@@ -41,6 +41,15 @@ def create_cap():
     )
     inner.apply_translation([0, 0, -0.25])
 
+    # torus at the bottom of inner annulus to thicken the end
+    inner_mid_r = (0.7 + TIP_ID / 2.0) / 2.0+0.3
+    tube_r = (TIP_ID / 2.0 - 0.7) / 2.0
+    torus = trimesh.creation.torus(
+        major_radius=inner_mid_r, minor_radius=tube_r
+    )
+    inner_bottom_z = -0.05 - (CAP_H + 0.5) / 2.0
+    torus.apply_translation([0, 0, inner_bottom_z])
+
     top = trimesh.creation.annulus(
         r_min=(0.7 + EPS),
         r_max=(TIP_OD / 2.0 + WALL - EPS),
@@ -49,7 +58,7 @@ def create_cap():
     )
     top.apply_translation([0, 0, CAP_H / 2 + 0.25 - EPS])
 
-    return [outer, inner, top]
+    return [outer, inner, torus, top]
 
 
 def create_handle():
@@ -140,18 +149,6 @@ def main():
 
     all_parts = cap + handle + cone + clamp
 
-    parts = {
-        "outer_annulus": cap[0],
-        "inner_annulus": cap[1],
-        "top_ring": cap[2],
-        "handle": handle[0],
-        "support_handle": handle[1],
-        "support": handle[2],
-        "cone": cone[0],
-        "l_tube": clamp[0],
-        "clamp_pos": clamp[1],
-        "clamp_neg": clamp[2],
-    }
     result = reduce(lambda a, b: a.union(b), all_parts)
 
     project_root = os.path.dirname(os.path.dirname(__file__))
@@ -162,30 +159,6 @@ def main():
     result.export(out_path)
     print("done:", len(result.faces), "faces →", out_path)
     print("watertight:", result.is_watertight)
-
-    # Export colored GLB for visual inspection
-    colors = [
-        [230, 80, 80, 255],  # cap - red
-        [230, 80, 80, 255],
-        [230, 80, 80, 255],
-        [80, 180, 80, 255],  # handle - green
-        [80, 180, 80, 255],
-        [80, 180, 80, 255],
-        [80, 130, 230, 255],  # cone - blue
-        [230, 180, 50, 255],  # clamp - yellow
-        [230, 180, 50, 255],
-        [230, 180, 50, 255],
-    ]
-    for mesh, color in zip(all_parts, colors):
-        mesh.visual.face_colors = color
-
-    scene = trimesh.Scene()
-    for name, mesh in parts.items():
-        scene.add_geometry(mesh, node_name=name)
-
-    glb_path = os.path.join(out_dir, "stylus.glb")
-    scene.export(glb_path)
-    print("done:", glb_path)
 
 
 if __name__ == "__main__":
